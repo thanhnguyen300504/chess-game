@@ -56,6 +56,23 @@ public class Tile {
         return false;
     }
 
+    /**
+     * check if two Tile have different colours
+     * @param otherTile
+     * @return true if different, false otherwise
+     */
+    public boolean isDifferentColour(Tile otherTile) {
+        if (!this.isEmpty() && !otherTile.isEmpty()) {
+            Colour currentPieceColour = this.getTopPiece().getPieceColour();
+            Colour otherPiececolour = otherTile.getTopPiece().getPieceColour();
+            if (currentPieceColour != otherPiececolour) {
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
 
 
 
