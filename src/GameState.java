@@ -41,6 +41,7 @@ public class GameState {
             PieceType currentPieceType = currentTile.getTopPiece().getPieceType();
             switch (currentPieceType) {
                 case PAWN: return possibleMovesForPawns(row, col);
+                case ROOK: return possibleMovesForRook(row, col);
                 default: new HashSet<>();
             }
         }
@@ -121,10 +122,21 @@ public class GameState {
         PieceType currentPieceType = currentPiece.getPieceType();
         if (currentPieceType != PieceType.ROOK) return new HashSet<>();
         Set<Tile> allLegalMoves = new HashSet<>();
-        for (int i = 0; i < Board.NUMBER_OF_ROWS; i++) {
-            for (int j = 0; j < Board.NUMBER_OF_COLS; j++) {
-                if (i == row || j == col) {
-
+        for (int i = - Board.NUMBER_OF_ROWS + 1; i < Board.NUMBER_OF_ROWS; i++) {
+            for (int j = - Board.NUMBER_OF_COLS + 1; j < Board.NUMBER_OF_COLS; j++) {
+                if (i == 0 ^ j == 0) {
+                    int newRow = row + i;
+                    int newCol = col + i;
+                    Tile[][] tiles = this.getBoard().getTiles();
+                    if (this.getBoard().isWithinBoard(row, col)) {
+                        Tile targetTile = tiles[newRow][newCol];
+                        if (targetTile.isEmpty()) {
+                            allLegalMoves.add(targetTile);
+                        }
+                        else if (targetTile.getTopPiece().getPieceColour() != currentPiece.getPieceColour()) {
+                            allLegalMoves.add(targetTile);
+                        }
+                    }
                 }
             }
         }
