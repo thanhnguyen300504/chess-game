@@ -1,2 +1,3 @@
-package PACKAGE_NAME;public enum PieceType {
+public enum PieceType {
+    KING, ROOK, BISHOP, QUEEN, KNIGHT, PAWN
 }

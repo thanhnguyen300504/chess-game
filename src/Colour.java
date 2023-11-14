@@ -1,7 +1,6 @@
-package side;
-
+/**
+ * Colour enum
+ */
 public enum Colour {
-    BLACK, WHITE
-
-
+    BLACK, WHITE;
 }

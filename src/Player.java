@@ -1,7 +1,3 @@
-package side;
-
-import side.Colour;
-
 import java.util.List;
 
 public class Player {
@@ -9,7 +5,6 @@ public class Player {
     private List<Tile> playerTiles;
     private boolean checkOpponent;
     private boolean gotChecked;
-
     public Player(Colour colour) {
         this.colour = colour;
     }

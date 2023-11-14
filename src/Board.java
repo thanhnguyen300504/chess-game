@@ -1,6 +1,6 @@
-import side.Colour;
-import side.Piece;
-
+/**
+ * Board class
+ */
 public class Board {
     public static final int NUMBER_OF_ROWS = 8;
     public static final int NUMBER_OF_COLS = 8;
@@ -50,10 +50,20 @@ public class Board {
         }
     }
 
+    /**
+     * get the tiles matrix of the Board
+     * @return tiles
+     */
     public Tile[][] getTiles() {
         return this.tiles;
     }
 
+    /**
+     * check if the position is within the board
+     * @param row
+     * @param col
+     * @return true if is within, false otherwise
+     */
     public boolean isWithinBoard(int row, int col) {
         if (row >= 0 && row < NUMBER_OF_ROWS && col >= 0 && col < NUMBER_OF_COLS) {
             return true;
