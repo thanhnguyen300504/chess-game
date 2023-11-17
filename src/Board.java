@@ -4,7 +4,7 @@
 public class Board {
     public static final int NUMBER_OF_ROWS = 8;
     public static final int NUMBER_OF_COLS = 8;
-    private final Tile[][] tiles = new Tile[NUMBER_OF_ROWS][NUMBER_OF_COLS];
+    private Tile[][] tiles = new Tile[NUMBER_OF_ROWS][NUMBER_OF_COLS];
 
     /**
      * Board constructor: create a new instance of Board, initializing the starting board

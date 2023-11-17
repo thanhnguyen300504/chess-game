@@ -94,7 +94,8 @@ public class GameState {
 
                 // check if capturing is allowed
                 if (!targetTile.isEmpty()) {
-                    if ((i == 0 || i == 1) && targetTile.getTopPiece().getPieceColour() != currentPieceColour) {
+                    Colour targetTileColour = targetTile.getTopPiece().getPieceColour();
+                    if ((i == 0 || i == 1) && targetTileColour != currentPieceColour) {
                         allLegalMoves.add(targetTile);
                     }
                 }
@@ -128,7 +129,7 @@ public class GameState {
                     int newRow = row + i;
                     int newCol = col + i;
                     Tile[][] tiles = this.getBoard().getTiles();
-                    if (this.getBoard().isWithinBoard(row, col)) {
+                    if (this.getBoard().isWithinBoard(newRow, newCol)) {
                         Tile targetTile = tiles[newRow][newCol];
                         if (targetTile.isEmpty()) {
                             allLegalMoves.add(targetTile);
@@ -141,6 +142,38 @@ public class GameState {
             }
         }
         return allLegalMoves;
-
     }
+
+    private Set<Tile> possibleMovesForKnight(int row, int col) {
+        Tile currentTile = this.getBoard().getTiles()[row][col];
+        Piece currentPiece = currentTile.getTopPiece();
+        PieceType currentPieceType = currentPiece.getPieceType();
+        if (currentPieceType != PieceType.KNIGHT) return new HashSet<>();
+        Set<Tile> allLegalMoves = new HashSet<>();
+
+        for (int i = - Board.NUMBER_OF_ROWS + 1; i < Board.NUMBER_OF_ROWS; i++) {
+            for (int j = - Board.NUMBER_OF_COLS + 1; j < Board.NUMBER_OF_COLS; j++) {
+                int newRow = row + i;
+                int newCol = col + i;
+                Tile[][] tiles = this.getBoard().getTiles();
+
+                Tile targetTile = tiles[newRow][newCol];
+                if (this.getBoard().isWithinBoard(newRow, newCol)) {
+                    int dRow = Math.abs(newRow - row);
+                    int dCol = Math.abs(newCol - col);
+                    if (dRow * dCol == 2) {
+                        if (targetTile.isEmpty()) {
+                            allLegalMoves.add(targetTile);
+                        }
+                        else if (targetTile.getTopPiece().getPieceColour() != currentPiece.getPieceColour()) {
+                            allLegalMoves.add(targetTile);
+                        }
+                    }
+                }
+            }
+        }
+
+        return allLegalMoves;
+    }
+
 }
