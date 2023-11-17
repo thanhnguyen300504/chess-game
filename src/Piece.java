@@ -4,8 +4,8 @@
  * - pieceType: type of piece (ROOK, PAWN, BISHOP, QUEEN, KING, KNIGHT)
  */
 public class Piece {
-    private Colour pieceColour;
-    private PieceType pieceType;
+    private final Colour pieceColour;
+    private final PieceType pieceType;
 
     /**
      * Piece constructor: create a new instance of Piece class

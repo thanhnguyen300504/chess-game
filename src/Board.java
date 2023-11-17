@@ -1,5 +1,8 @@
 /**
- * Board class
+ * Board class contains properties of a normal board:
+ * - NUMBER_OF_ROWS: number of rows of the board
+ * - NUMBER_OF_COLS: number of columns of the board
+ * - tiles: the 2D array representation of the board
  */
 public class Board {
     public static final int NUMBER_OF_ROWS = 8;

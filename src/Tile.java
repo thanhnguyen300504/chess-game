@@ -5,9 +5,9 @@
  * - topPiece: the Piece occupying the Tile (null if the Tile is empty)
  */
 public class Tile {
-    private int row;
-    private int col;
-    private Piece topPiece;
+    private final int row;
+    private final int col;
+    private final Piece topPiece;
 
     /**
      * Tile constructor: create a new instance of Tile class
