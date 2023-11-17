@@ -13,14 +13,16 @@ public class GameState {
 
     /**
      * getter method for board
+     *
      * @return board
      */
     public Board getBoard() {
-         return this.board;
+        return this.board;
     }
 
     /**
      * getter method for currentPlayer
+     *
      * @return currentPlayer
      */
     public Player getCurrentPlayer() {
@@ -29,6 +31,7 @@ public class GameState {
 
     /**
      * return the set of legal moves that the current piece can make
+     *
      * @param row
      * @param col
      * @return set of Tile that PIECE can move to
@@ -40,10 +43,14 @@ public class GameState {
         if (!currentTile.isEmpty()) {
             PieceType currentPieceType = currentTile.getTopPiece().getPieceType();
             switch (currentPieceType) {
-                case PAWN: return getMovesForPawn(row, col);
-                case ROOK: return getMovesForRook(row, col);
-                case KNIGHT: return getMovesForKnight(row, col);
-                default: new HashSet<>();
+                case PAWN:
+                    return getMovesForPawn(row, col);
+                case ROOK:
+                    return getMovesForRook(row, col);
+                case KNIGHT:
+                    return getMovesForKnight(row, col);
+                default:
+                    new HashSet<>();
             }
         }
         return new HashSet<>();
@@ -51,6 +58,7 @@ public class GameState {
 
     /**
      * return the set of legal moves that the current PAWN can make
+     *
      * @param row
      * @param col
      * @return set of Tile that PAWN can move to
@@ -114,6 +122,7 @@ public class GameState {
 
     /**
      * return the set of Tile that the current ROOK can make
+     *
      * @param row
      * @param col
      * @return set of Tile that ROOK can move to
@@ -130,30 +139,29 @@ public class GameState {
         boolean firstRowCapture = false;
         boolean firstColCapture = false;
 
-        for (int j = - Board.NUMBER_OF_COLS + 1; j < Board.NUMBER_OF_COLS; j++) {
-            int newCol =  col + j;
+        for (int j = -Board.NUMBER_OF_COLS + 1; j < Board.NUMBER_OF_COLS; j++) {
+            int newCol = col + j;
             if (board.isWithinBoard(row, newCol)) {
                 Tile targetTile = board.getTiles()[row][newCol];
-                if (targetTile.isEmpty()) {
+                if (targetTile.isEmpty() && !firstColCapture) {
                     allLegalMoves.add(targetTile);
-                }
-                else if (currentTile.isDifferentColour(targetTile) && !firstColCapture) {
+                } else if (currentTile.isDifferentColour(targetTile) && !firstColCapture) {
                     allLegalMoves.add(targetTile);
                     firstColCapture = true;
                 }
             }
         }
 
-        for (int i = - Board.NUMBER_OF_ROWS + 1; i < Board.NUMBER_OF_ROWS; i++) {
+        for (int i = -Board.NUMBER_OF_ROWS + 1; i < Board.NUMBER_OF_ROWS; i++) {
             int newRow = row + i;
             if (board.isWithinBoard(newRow, col)) {
                 Tile targetTile = board.getTiles()[newRow][col];
-                if (targetTile.isEmpty()) {
+                if (targetTile.isEmpty() && !firstRowCapture) {
                     allLegalMoves.add(targetTile);
-                }
-                else if (currentTile.isDifferentColour(targetTile) && !firstRowCapture) {
+                } else if (currentTile.isDifferentColour(targetTile) && !firstRowCapture) {
                     allLegalMoves.add(targetTile);
                     firstRowCapture = true;
+                    break;
                 }
             }
         }
@@ -168,8 +176,8 @@ public class GameState {
         if (currentPieceType != PieceType.KNIGHT) return new HashSet<>();
         Set<Tile> allLegalMoves = new HashSet<>();
 
-        for (int i = - Board.NUMBER_OF_ROWS + 1; i < Board.NUMBER_OF_ROWS; i++) {
-            for (int j = - Board.NUMBER_OF_COLS + 1; j < Board.NUMBER_OF_COLS; j++) {
+        for (int i = -Board.NUMBER_OF_ROWS + 1; i < Board.NUMBER_OF_ROWS; i++) {
+            for (int j = -Board.NUMBER_OF_COLS + 1; j < Board.NUMBER_OF_COLS; j++) {
                 int newRow = row + i;
                 int newCol = col + j;
                 Tile[][] tiles = this.getBoard().getTiles();
@@ -181,8 +189,7 @@ public class GameState {
                     if (dRow * dCol == 2) {
                         if (targetTile.isEmpty()) {
                             allLegalMoves.add(targetTile);
-                        }
-                        else if (currentTile.isDifferentColour(targetTile)) {
+                        } else if (currentTile.isDifferentColour(targetTile)) {
                             allLegalMoves.add(targetTile);
                         }
                     }
@@ -197,15 +204,44 @@ public class GameState {
         Tile currentTile = this.getBoard().getTiles()[row][col];
         Piece currentPiece = currentTile.getTopPiece();
         PieceType currentPieceType = currentPiece.getPieceType();
-        if (currentPieceType != PieceType.BISHOP) return new HashSet<>();
+        Tile[][] tiles = board.getTiles();
+
+        if (currentPieceType != PieceType.KNIGHT) return new HashSet<>();
+
         Set<Tile> allLegalMoves = new HashSet<>();
 
+        for (int dRow = -1; dRow > -Board.NUMBER_OF_ROWS; dRow--) {
+            for (int dCol = -1; dCol > -Board.NUMBER_OF_COLS; dCol--) {
+                int newRow = row + dRow;
+                int newCol = col + dCol;
+                if (board.isWithinBoard(newRow, newCol) && (dRow == dCol)) {
+                    Tile targetTile = tiles[newRow][newCol];
+                    if (targetTile.isEmpty()) {
+                        allLegalMoves.add(targetTile);
+                    } else if (targetTile.isDifferentColour(currentTile)) {
+                        allLegalMoves.add(targetTile);
+                        break;
+                    }
+                }
+            }
+        }
 
+        for (int dRow = 1; dRow < Board.NUMBER_OF_ROWS; dRow++) {
+            for (int dCol = 1; dCol > Board.NUMBER_OF_COLS; dCol++) {
+                int newRow = row + dRow;
+                int newCol = col + dCol;
+                if (board.isWithinBoard(newRow, newCol) && (dRow == dCol)) {
+                    Tile targetTile = tiles[newRow][newCol];
+                    if (targetTile.isEmpty()) {
+                        allLegalMoves.add(targetTile);
+                    } else if (targetTile.isDifferentColour(currentTile)) {
+                        allLegalMoves.add(targetTile);
+                        break;
+                    }
+                }
+            }
 
-
-
-
+        }
         return allLegalMoves;
     }
-
 }
