@@ -270,6 +270,33 @@ public class GameState {
         return allLegalMoves;
     }
 
+    private Set<Tile> getMovesForQueen(int row, int col) {
+        if (!board.isWithinBoard(row, col)) return new HashSet<>();
+
+        Tile currentTile = board.getTiles()[row][col];
+
+        if (currentTile.isEmpty()) return new HashSet<>();
+
+        Piece currentPiece = currentTile.getTopPiece();
+        PieceType currentPieceType = currentPiece.getPieceType();
+
+
+
+        Set<Tile> allLegalMoves = new HashSet<>();
+
+        if (currentPieceType == PieceType.QUEEN) {
+            for (Tile legalPos : this.getMovesForBishop(row, col)) {
+                allLegalMoves.add(legalPos);
+            }
+            for (Tile legalPos : this.getMovesForRook(row, col)) {
+                allLegalMoves.add(legalPos);
+            }
+        }
+
+        return allLegalMoves;
+
+    }
+
 
 
 }
