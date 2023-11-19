@@ -10,6 +10,7 @@ import java.util.Set;
 public class GameState {
     private Board board;
     private Player currentPlayer;
+    boolean pawnMoves2Squares = false;
 
     /**
      * getter method for board
@@ -76,13 +77,14 @@ public class GameState {
         if (currentPieceType == PieceType.PAWN) {
             Colour currentPieceColour = currentPiece.getPieceColour();
             Set<Tile> allLegalMoves = new HashSet<>();
+            Tile[][] tiles = board.getTiles();
 
             /**
              * all directions that a PAWN could move
              * - forward-diagonal to capture piece
              * - one-step vertical to move
              */
-            int[][] directions = {{-1, -1}, {1, -1}, {0, -1}};
+            int[][] directions = {{-1, -1}, {1, -1}, {0, -1}, {0, -2}};
 
             for (int i = 0; i < directions.length; i++) {
                 int[] move = directions[i];
@@ -101,8 +103,6 @@ public class GameState {
                     newCol = col - move[1];
                 }
 
-                Board currentBoard = this.getBoard();
-                Tile[][] tiles = currentBoard.getTiles();
                 Tile targetTile = tiles[newRow][newCol];
 
                 // check if capturing is allowed
@@ -113,11 +113,17 @@ public class GameState {
                 }
 
                 // check if one-step vertical movement is allowed
-                else if (targetTile.isEmpty() && i == 2) {
+                if (targetTile.isEmpty() && i == 2) {
                     allLegalMoves.add(targetTile);
                 }
 
+                if (targetTile.isEmpty() && i == 3 && !pawnMoves2Squares) {
+                    allLegalMoves.add(targetTile);
+                    pawnMoves2Squares = true;
+                }
+
             }
+
             return allLegalMoves;
         }
         return new HashSet<>();
