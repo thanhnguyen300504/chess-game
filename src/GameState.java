@@ -270,6 +270,12 @@ public class GameState {
         return allLegalMoves;
     }
 
+    /**
+     * return the set of Tile that the current Queen can make
+     * @param row
+     * @param col
+     * @return set of Tile that ROOK can move to
+     */
     private Set<Tile> getMovesForQueen(int row, int col) {
         if (!board.isWithinBoard(row, col)) return new HashSet<>();
 
@@ -285,12 +291,8 @@ public class GameState {
         Set<Tile> allLegalMoves = new HashSet<>();
 
         if (currentPieceType == PieceType.QUEEN) {
-            for (Tile legalPos : this.getMovesForBishop(row, col)) {
-                allLegalMoves.add(legalPos);
-            }
-            for (Tile legalPos : this.getMovesForRook(row, col)) {
-                allLegalMoves.add(legalPos);
-            }
+            allLegalMoves.addAll(this.getMovesForBishop(row, col));
+            allLegalMoves.addAll(this.getMovesForRook(row, col));
         }
 
         return allLegalMoves;
