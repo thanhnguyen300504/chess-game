@@ -49,6 +49,8 @@ public class GameState {
                     return getMovesForRook(row, col);
                 case KNIGHT:
                     return getMovesForKnight(row, col);
+                case BISHOP:
+                    return getMovesForBishop(row, col);
                 default:
                     new HashSet<>();
             }
@@ -58,12 +60,13 @@ public class GameState {
 
     /**
      * return the set of legal moves that the current PAWN can make
-     *
      * @param row
      * @param col
      * @return set of Tile that PAWN can move to
      */
     private Set<Tile> getMovesForPawn(int row, int col) {
+        if (!board.isWithinBoard(row, col)) return new HashSet<>();
+
         // Tile properties from the current coordinates (row, col)
         Tile currentTile = this.getBoard().getTiles()[row][col];
         Piece currentPiece = currentTile.getTopPiece();
@@ -97,14 +100,14 @@ public class GameState {
                     newRow = row - move[0];
                     newCol = col - move[1];
                 }
+
                 Board currentBoard = this.getBoard();
                 Tile[][] tiles = currentBoard.getTiles();
                 Tile targetTile = tiles[newRow][newCol];
 
                 // check if capturing is allowed
                 if (!targetTile.isEmpty()) {
-                    Colour targetTileColour = targetTile.getTopPiece().getPieceColour();
-                    if ((i == 0 || i == 1) && targetTileColour != currentPieceColour) {
+                    if ((i == 0 || i == 1) && currentTile.isDifferentColour(targetTile)) {
                         allLegalMoves.add(targetTile);
                     }
                 }
@@ -121,69 +124,28 @@ public class GameState {
     }
 
     /**
-     * return the set of Tile that the current ROOK can make
-     *
+     * return the set of Tile that the current Knight can make
      * @param row
      * @param col
      * @return set of Tile that ROOK can move to
      */
-    private Set<Tile> getMovesForRook(int row, int col) {
-
-        Tile currentTile = this.getBoard().getTiles()[row][col];
-        Piece currentPiece = currentTile.getTopPiece();
-        PieceType currentPieceType = currentPiece.getPieceType();
-
-        if (currentPieceType != PieceType.ROOK) return new HashSet<>();
-
-        Set<Tile> allLegalMoves = new HashSet<>();
-        boolean firstRowCapture = false;
-        boolean firstColCapture = false;
-
-        for (int j = -Board.NUMBER_OF_COLS + 1; j < Board.NUMBER_OF_COLS; j++) {
-            int newCol = col + j;
-            if (board.isWithinBoard(row, newCol)) {
-                Tile targetTile = board.getTiles()[row][newCol];
-                if (targetTile.isEmpty() && !firstColCapture) {
-                    allLegalMoves.add(targetTile);
-                } else if (currentTile.isDifferentColour(targetTile) && !firstColCapture) {
-                    allLegalMoves.add(targetTile);
-                    firstColCapture = true;
-                }
-            }
-        }
-
-        for (int i = -Board.NUMBER_OF_ROWS + 1; i < Board.NUMBER_OF_ROWS; i++) {
-            int newRow = row + i;
-            if (board.isWithinBoard(newRow, col)) {
-                Tile targetTile = board.getTiles()[newRow][col];
-                if (targetTile.isEmpty() && !firstRowCapture) {
-                    allLegalMoves.add(targetTile);
-                } else if (currentTile.isDifferentColour(targetTile) && !firstRowCapture) {
-                    allLegalMoves.add(targetTile);
-                    firstRowCapture = true;
-                    break;
-                }
-            }
-        }
-        return allLegalMoves;
-
-    }
-
     private Set<Tile> getMovesForKnight(int row, int col) {
+        if (!board.isWithinBoard(row, col)) return new HashSet<>();
+
         Tile currentTile = this.getBoard().getTiles()[row][col];
         Piece currentPiece = currentTile.getTopPiece();
         PieceType currentPieceType = currentPiece.getPieceType();
         if (currentPieceType != PieceType.KNIGHT) return new HashSet<>();
         Set<Tile> allLegalMoves = new HashSet<>();
 
-        for (int i = -Board.NUMBER_OF_ROWS + 1; i < Board.NUMBER_OF_ROWS; i++) {
-            for (int j = -Board.NUMBER_OF_COLS + 1; j < Board.NUMBER_OF_COLS; j++) {
+        for (int i = - Board.NUMBER_OF_ROWS + 1; i < Board.NUMBER_OF_ROWS; i++) {
+            for (int j = - Board.NUMBER_OF_COLS + 1; j < Board.NUMBER_OF_COLS; j++) {
                 int newRow = row + i;
                 int newCol = col + j;
                 Tile[][] tiles = this.getBoard().getTiles();
 
                 Tile targetTile = tiles[newRow][newCol];
-                if (board.isWithinBoard(newRow, newCol) && board.isWithinBoard(row, col)) {
+                if (board.isWithinBoard(newRow, newCol)) {
                     int dRow = Math.abs(newRow - row);
                     int dCol = Math.abs(newCol - col);
                     if (dRow * dCol == 2) {
@@ -200,48 +162,117 @@ public class GameState {
         return allLegalMoves;
     }
 
+    /**
+     * return the set of Tile that the current Bishop can make
+     * @param row
+     * @param col
+     * @return set of Tile that ROOK can move to
+     */
     private Set<Tile> getMovesForBishop(int row, int col) {
+        if (!board.isWithinBoard(row, col)) return new HashSet<>();
+
         Tile currentTile = this.getBoard().getTiles()[row][col];
+
+        if (currentTile.isEmpty()) return new HashSet<>();
+
         Piece currentPiece = currentTile.getTopPiece();
         PieceType currentPieceType = currentPiece.getPieceType();
         Tile[][] tiles = board.getTiles();
 
-        if (currentPieceType != PieceType.KNIGHT) return new HashSet<>();
 
         Set<Tile> allLegalMoves = new HashSet<>();
 
-        for (int dRow = -1; dRow > -Board.NUMBER_OF_ROWS; dRow--) {
-            for (int dCol = -1; dCol > -Board.NUMBER_OF_COLS; dCol--) {
-                int newRow = row + dRow;
-                int newCol = col + dCol;
-                if (board.isWithinBoard(newRow, newCol) && (dRow == dCol)) {
-                    Tile targetTile = tiles[newRow][newCol];
-                    if (targetTile.isEmpty()) {
-                        allLegalMoves.add(targetTile);
-                    } else if (targetTile.isDifferentColour(currentTile)) {
-                        allLegalMoves.add(targetTile);
-                        break;
-                    }
-                }
-            }
-        }
-
-        for (int dRow = 1; dRow < Board.NUMBER_OF_ROWS; dRow++) {
-            for (int dCol = 1; dCol > Board.NUMBER_OF_COLS; dCol++) {
-                int newRow = row + dRow;
-                int newCol = col + dCol;
-                if (board.isWithinBoard(newRow, newCol) && (dRow == dCol)) {
-                    Tile targetTile = tiles[newRow][newCol];
-                    if (targetTile.isEmpty()) {
-                        allLegalMoves.add(targetTile);
-                    } else if (targetTile.isDifferentColour(currentTile)) {
-                        allLegalMoves.add(targetTile);
-                        break;
+        if (currentPieceType == PieceType.BISHOP || currentPieceType == PieceType.QUEEN) {
+            for (int dRow = -1; dRow > -Board.NUMBER_OF_ROWS; dRow--) {
+                for (int dCol = -1; dCol > -Board.NUMBER_OF_COLS; dCol--) {
+                    int newRow = row + dRow;
+                    int newCol = col + dCol;
+                    if (board.isWithinBoard(newRow, newCol) && (dRow == dCol)) {
+                        Tile targetTile = tiles[newRow][newCol];
+                        if (targetTile.isEmpty()) {
+                            allLegalMoves.add(targetTile);
+                        } else if (targetTile.isDifferentColour(currentTile)) {
+                            allLegalMoves.add(targetTile);
+                            break;
+                        }
                     }
                 }
             }
 
+            for (int dRow = 1; dRow < Board.NUMBER_OF_ROWS; dRow++) {
+                for (int dCol = 1; dCol < Board.NUMBER_OF_COLS; dCol++) {
+                    int newRow = row + dRow;
+                    int newCol = col + dCol;
+                    if (board.isWithinBoard(newRow, newCol) && (dRow == dCol)) {
+                        Tile targetTile = tiles[newRow][newCol];
+                        if (targetTile.isEmpty()) {
+                            allLegalMoves.add(targetTile);
+                        } else if (targetTile.isDifferentColour(currentTile)) {
+                            allLegalMoves.add(targetTile);
+                            break;
+                        }
+                    }
+                }
+
+            }
         }
         return allLegalMoves;
     }
+
+    /**
+     * return the set of Tile that the current ROOK can make
+     * @param row
+     * @param col
+     * @return set of Tile that ROOK can move to
+     */
+    private Set<Tile> getMovesForRook(int row, int col) {
+        if (!board.isWithinBoard(row, col)) return new HashSet<>();
+
+        Tile currentTile = board.getTiles()[row][col];
+
+        if (currentTile.isEmpty()) return new HashSet<>();
+
+        Piece currentPiece = currentTile.getTopPiece();
+        PieceType currentPieceType = currentPiece.getPieceType();
+        Tile[][] tiles = board.getTiles();
+
+
+        Set<Tile> allLegalMoves = new HashSet<>();
+
+        if (currentPieceType == PieceType.ROOK || currentPieceType == PieceType.QUEEN) {
+            for (int dCol = -Board.NUMBER_OF_COLS + 1; dCol < Board.NUMBER_OF_COLS; dCol++) {
+                int newCol = col + dCol;
+                if (board.isWithinBoard(row, newCol)) {
+                    Tile targetTile = tiles[row][newCol];
+                    if (targetTile.isEmpty()) {
+                        allLegalMoves.add(targetTile);
+                    } else if (currentTile.isDifferentColour(targetTile)) {
+                        allLegalMoves.add(targetTile);
+                        break;
+                    }
+                }
+            }
+
+            for (int dRow = -Board.NUMBER_OF_ROWS + 1; dRow < Board.NUMBER_OF_ROWS; dRow++) {
+                int newRow = row + dRow;
+                if (board.isWithinBoard(newRow, col)) {
+                    Tile targetTile = tiles[newRow][col];
+                    if (targetTile.isEmpty()) {
+                        allLegalMoves.add(targetTile);
+                    } else if (currentTile.isDifferentColour(targetTile)) {
+                        allLegalMoves.add(targetTile);
+                        break;
+                    }
+                }
+            }
+        }
+
+        return allLegalMoves;
+    }
+
+
+
 }
+
+
+
