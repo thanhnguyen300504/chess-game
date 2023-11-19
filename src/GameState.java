@@ -132,26 +132,28 @@ public class GameState {
     private Set<Tile> getMovesForKnight(int row, int col) {
         if (!board.isWithinBoard(row, col)) return new HashSet<>();
 
-        Tile currentTile = this.getBoard().getTiles()[row][col];
+        Tile currentTile = board.getTiles()[row][col];
+        if (currentTile.isEmpty()) return new HashSet<>();
+
         Piece currentPiece = currentTile.getTopPiece();
         PieceType currentPieceType = currentPiece.getPieceType();
+
         if (currentPieceType != PieceType.KNIGHT) return new HashSet<>();
+
+        Tile[][] tiles = board.getTiles();
         Set<Tile> allLegalMoves = new HashSet<>();
 
         for (int i = - Board.NUMBER_OF_ROWS + 1; i < Board.NUMBER_OF_ROWS; i++) {
             for (int j = - Board.NUMBER_OF_COLS + 1; j < Board.NUMBER_OF_COLS; j++) {
                 int newRow = row + i;
                 int newCol = col + j;
-                Tile[][] tiles = this.getBoard().getTiles();
 
                 Tile targetTile = tiles[newRow][newCol];
                 if (board.isWithinBoard(newRow, newCol)) {
                     int dRow = Math.abs(newRow - row);
                     int dCol = Math.abs(newCol - col);
                     if (dRow * dCol == 2) {
-                        if (targetTile.isEmpty()) {
-                            allLegalMoves.add(targetTile);
-                        } else if (currentTile.isDifferentColour(targetTile)) {
+                        if (targetTile.isEmpty() || currentTile.isDifferentColour(targetTile)) {
                             allLegalMoves.add(targetTile);
                         }
                     }
