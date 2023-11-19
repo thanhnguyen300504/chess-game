@@ -9,8 +9,9 @@ import java.util.Set;
  */
 public class GameState {
     private Board board;
-    private Player currentPlayer;
-    boolean pawnMoves2Squares = false;
+    private Player currentPlayer = new Player(Colour.WHITE);
+    boolean whitePawnMovesTwo = false;
+    boolean blackPawnMovesTwo = false;
 
     /**
      * getter method for board
@@ -52,6 +53,8 @@ public class GameState {
                     return getMovesForKnight(row, col);
                 case BISHOP:
                     return getMovesForBishop(row, col);
+                case QUEEN:
+                    return getMovesForQueen(row, col);
                 default:
                     new HashSet<>();
             }
@@ -117,9 +120,13 @@ public class GameState {
                     allLegalMoves.add(targetTile);
                 }
 
-                if (targetTile.isEmpty() && i == 3 && !pawnMoves2Squares) {
-                    allLegalMoves.add(targetTile);
-                    pawnMoves2Squares = true;
+                if (targetTile.isEmpty() && i == 3) {
+                    if (currentPieceColour == Colour.WHITE && !whitePawnMovesTwo) {
+                        allLegalMoves.add(targetTile);
+                    }
+                    else if (currentPieceColour == Colour.BLACK && !blackPawnMovesTwo) {
+                        allLegalMoves.add(targetTile);
+                    }
                 }
 
             }
