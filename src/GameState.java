@@ -209,6 +209,8 @@ public class GameState {
                         } else if (targetTile.isDifferentColour(currentTile)) {
                             allLegalMoves.add(targetTile);
                             break;
+                        } else {
+                            break;
                         }
                     }
                 }
@@ -224,6 +226,8 @@ public class GameState {
                             allLegalMoves.add(targetTile);
                         } else if (targetTile.isDifferentColour(currentTile)) {
                             allLegalMoves.add(targetTile);
+                            break;
+                        } else {
                             break;
                         }
                     }
@@ -264,6 +268,8 @@ public class GameState {
                     } else if (currentTile.isDifferentColour(targetTile)) {
                         allLegalMoves.add(targetTile);
                         break;
+                    } else {
+                        break;
                     }
                 }
             }
@@ -276,6 +282,8 @@ public class GameState {
                         allLegalMoves.add(targetTile);
                     } else if (currentTile.isDifferentColour(targetTile)) {
                         allLegalMoves.add(targetTile);
+                        break;
+                    } else {
                         break;
                     }
                 }
