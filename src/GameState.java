@@ -322,6 +322,12 @@ public class GameState {
 
     }
 
+    /**
+     * return the set of Tile that the current KING can make
+     * @param row
+     * @param col
+     * @return set of Tile that KING can move to
+     */
     private Set<Tile> getMovesForKing(int row, int col) {
         if (!board.isWithinBoard(row, col)) return new HashSet<>();
 
