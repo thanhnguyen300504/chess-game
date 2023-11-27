@@ -31,6 +31,8 @@ public class GameState {
         return this.currentPlayer;
     }
 
+    
+
     /**
      * return the set of legal moves that the current piece can make
      *
@@ -55,6 +57,8 @@ public class GameState {
                     return getMovesForBishop(row, col);
                 case QUEEN:
                     return getMovesForQueen(row, col);
+                case KING:
+                    return getMovesForKing(row, col);
                 default:
                     new HashSet<>();
             }
@@ -76,10 +80,10 @@ public class GameState {
         Piece currentPiece = currentTile.getTopPiece();
         PieceType currentPieceType = currentPiece.getPieceType();
 
+        Set<Tile> allLegalMoves = new HashSet<>();
         // check if Tile is occupied by PAWN
         if (currentPieceType == PieceType.PAWN) {
             Colour currentPieceColour = currentPiece.getPieceColour();
-            Set<Tile> allLegalMoves = new HashSet<>();
             Tile[][] tiles = board.getTiles();
 
             /**
@@ -130,10 +134,8 @@ public class GameState {
                 }
 
             }
-
-            return allLegalMoves;
         }
-        return new HashSet<>();
+        return allLegalMoves;
     }
 
     /**
