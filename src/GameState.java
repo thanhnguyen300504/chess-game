@@ -31,6 +31,26 @@ public class GameState {
         return this.currentPlayer;
     }
 
+    public void makeMove(int initRow, int initCol, int finRow, int finCol) {
+        if (board.isWithinBoard(initRow, initCol)
+                && board.isWithinBoard(finRow, finCol)) {
+            Tile[][] tiles = board.getTiles();
+            Tile targetTile = tiles[finRow][finCol];
+            Tile currentTile = tiles[initRow][initCol];
+            if (this.allLegalMoves(initRow, initCol).contains(targetTile)) {
+                Piece currentPiece = currentTile.getTopPiece();
+                PieceType currentPieceType = currentPiece.getPieceType();
+                if (currentPieceType == PieceType.PAWN && Math.abs(finCol - initCol) == 2) {
+                    switch (currentPiece.getPieceColour()) {
+                        case BLACK: blackPawnMovesTwo = true;
+                        case WHITE: whitePawnMovesTwo = true;
+                    }
+                }
+                tiles[finRow][finCol] = new Tile(finRow, finCol, currentTile.getTopPiece());
+                tiles[initRow][initCol] = new Tile(initRow, initCol, null);
+            }
+        }
+    }
     
 
     /**
