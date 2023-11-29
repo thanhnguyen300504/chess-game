@@ -43,7 +43,6 @@ public class GameState {
         boolean availableBlackMoves = false;
         for (int row = 0; row < Board.NUMBER_OF_ROWS; row++) {
             for (int col = 0; col < Board.NUMBER_OF_COLS; col++) {
-                Tile currentTile = board.getTiles()[row][col];
                 if (blackKingIsChecked) {
                     if (!this.getAllValidMoves(row, col).isEmpty()) {
                         availableBlackMoves = true;
