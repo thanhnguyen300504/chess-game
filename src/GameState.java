@@ -12,6 +12,8 @@ public class GameState {
     private Player currentPlayer = new Player(Colour.WHITE);
     boolean whitePawnMovesTwo = false;
     boolean blackPawnMovesTwo = false;
+    boolean blackKingIsChecked = false;
+    boolean whiteKingIsChecked = false;
 
     /**
      * getter method for board
@@ -32,23 +34,24 @@ public class GameState {
     }
 
 
-    public boolean checkKing(int initRow, int initCol, int finRow, int finCol) {
-        if (board.isWithinBoard(initRow, initCol)
-                && board.isWithinBoard(finRow, finCol)) {
-            Tile[][] tiles = board.getTiles();
-            Tile targetTile = tiles[finRow][finCol];
-            Tile currentTile = tiles[initRow][initCol];
-            if (this.getAllValidMoves(initRow, initCol).contains(targetTile)) {
-                if (!targetTile.isEmpty()) {
-                    PieceType currentPieceType = currentTile.getTopPiece().getPieceType();
-                    if (currentPieceType == PieceType.KING) {
-                        return true;
+    public void setCheckKing() {
+        for (int row = 0; row < Board.NUMBER_OF_ROWS; row++) {
+            for (int col = 0; col < Board.NUMBER_OF_COLS; col++) {
+                Set<Tile> allLegalMoves = this.getAllValidMoves(row, col);
+                for (Tile legalMove : allLegalMoves) {
+                    if (!legalMove.isEmpty()) {
+                        Piece currentPiece = legalMove.getTopPiece();
+                        PieceType currentPieceType = currentPiece.getPieceType();
+                        if (currentPieceType == PieceType.KING) {
+                            switch (currentPiece.getPieceColour()) {
+                                case BLACK: blackKingIsChecked = true;
+                                case WHITE: whiteKingIsChecked = true;
+                            }
+                        }
                     }
                 }
-
             }
         }
-        return false;
 
     }
 
