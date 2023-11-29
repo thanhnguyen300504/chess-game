@@ -33,6 +33,27 @@ public class GameState {
         return this.currentPlayer;
     }
 
+    public boolean isGameOver() {
+        boolean availableWhiteMoves = false;
+        boolean availableBlackMoves = false;
+        for (int row = 0; row < Board.NUMBER_OF_ROWS; row++) {
+            for (int col = 0; col < Board.NUMBER_OF_COLS; col++) {
+                Tile currentTile = board.getTiles()[row][col];
+                if (blackKingIsChecked) {
+                    if (!this.getAllValidMoves(row, col).isEmpty()) {
+                        availableBlackMoves = true;
+                    }
+                }
+                else if (whiteKingIsChecked) {
+                    if (!this.getAllValidMoves(row, col).isEmpty()) {
+                        availableWhiteMoves = true;
+                    }
+                }
+            }
+        }
+        if (!availableBlackMoves || !availableWhiteMoves) return true;
+        return false;
+    }
 
     public void setCheckKing() {
         for (int row = 0; row < Board.NUMBER_OF_ROWS; row++) {
@@ -52,7 +73,6 @@ public class GameState {
                 }
             }
         }
-
     }
 
     public void makeMove(int initRow, int initCol, int finRow, int finCol) {
