@@ -31,13 +31,34 @@ public class GameState {
         return this.currentPlayer;
     }
 
+
+    public boolean checkKing(int initRow, int initCol, int finRow, int finCol) {
+        if (board.isWithinBoard(initRow, initCol)
+                && board.isWithinBoard(finRow, finCol)) {
+            Tile[][] tiles = board.getTiles();
+            Tile targetTile = tiles[finRow][finCol];
+            Tile currentTile = tiles[initRow][initCol];
+            if (this.getAllValidMoves(initRow, initCol).contains(targetTile)) {
+                if (!targetTile.isEmpty()) {
+                    PieceType currentPieceType = currentTile.getTopPiece().getPieceType();
+                    if (currentPieceType == PieceType.KING) {
+                        return true;
+                    }
+                }
+
+            }
+        }
+        return false;
+
+    }
+
     public void makeMove(int initRow, int initCol, int finRow, int finCol) {
         if (board.isWithinBoard(initRow, initCol)
                 && board.isWithinBoard(finRow, finCol)) {
             Tile[][] tiles = board.getTiles();
             Tile targetTile = tiles[finRow][finCol];
             Tile currentTile = tiles[initRow][initCol];
-            if (this.allLegalMoves(initRow, initCol).contains(targetTile)) {
+            if (this.getAllValidMoves(initRow, initCol).contains(targetTile)) {
                 Piece currentPiece = currentTile.getTopPiece();
                 PieceType currentPieceType = currentPiece.getPieceType();
                 if (currentPieceType == PieceType.PAWN && Math.abs(finCol - initCol) == 2) {
@@ -61,7 +82,7 @@ public class GameState {
      * @return set of Tile that PIECE can move to
      * @return empty set if there's no moves available or the Tile is empty
      */
-    public Set<Tile> allLegalMoves(int row, int col) {
+    public Set<Tile> getAllValidMoves(int row, int col) {
         Tile[][] tiles = board.getTiles();
         Tile currentTile = tiles[row][col];
         if (!currentTile.isEmpty()) {
@@ -382,6 +403,8 @@ public class GameState {
 
         return allLegalMoves;
     }
+
+
 
 
 }
