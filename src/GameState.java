@@ -33,6 +33,11 @@ public class GameState {
         return this.currentPlayer;
     }
 
+    /**
+     * check if the game is over
+     * @return true if any King is currently checked and has no available
+     * legal moves to escape
+     */
     public boolean isGameOver() {
         boolean availableWhiteMoves = false;
         boolean availableBlackMoves = false;
@@ -55,6 +60,9 @@ public class GameState {
         return false;
     }
 
+    /**
+     * set Black KING or White King to being checked if the case happens
+     */
     public void setCheckKing() {
         for (int row = 0; row < Board.NUMBER_OF_ROWS; row++) {
             for (int col = 0; col < Board.NUMBER_OF_COLS; col++) {
