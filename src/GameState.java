@@ -34,6 +34,18 @@ public class GameState {
     }
 
     /**
+     * get the status of KING regarding its Colour
+     * @param colour
+     * @return true if KING is currently checked, false otherwise
+     */
+    private boolean getKingStatus(Colour colour) {
+        return switch (colour) {
+            case BLACK -> blackKingIsChecked;
+            case WHITE -> whiteKingIsChecked;
+        };
+    }
+
+    /**
      * check if the game is over
      * @return true if any King is currently checked and has no available
      * legal moves to escape
@@ -155,55 +167,56 @@ public class GameState {
         // check if Tile is occupied by PAWN
         if (currentPieceType == PieceType.PAWN) {
             Colour currentPieceColour = currentPiece.getPieceColour();
-            Tile[][] tiles = board.getTiles();
+            if (!this.getKingStatus(currentPieceColour)) {
+                Tile[][] tiles = board.getTiles();
 
-            /**
-             * all directions that a PAWN could move
-             * - forward-diagonal to capture piece
-             * - one-step vertical to move
-             */
-            int[][] directions = {{-1, -1}, {1, -1}, {0, -1}, {0, -2}};
+                /**
+                 * all directions that a PAWN could move
+                 * - forward-diagonal to capture piece
+                 * - one-step vertical to move
+                 */
+                int[][] directions = {{-1, -1}, {1, -1}, {0, -1}, {0, -2}};
 
-            for (int i = 0; i < directions.length; i++) {
-                int[] move = directions[i];
-                int newRow;
-                int newCol;
+                for (int i = 0; i < directions.length; i++) {
+                    int[] move = directions[i];
+                    int newRow;
+                    int newCol;
 
-                // movement of WHITE Piece
-                if (currentPiece.getPieceColour() == Colour.WHITE) {
-                    newRow = row + move[0];
-                    newCol = col + move[1];
-                }
+                    // movement of WHITE Piece
+                    if (currentPiece.getPieceColour() == Colour.WHITE) {
+                        newRow = row + move[0];
+                        newCol = col + move[1];
+                    }
 
-                // movement of BLACK Piece
-                else {
-                    newRow = row - move[0];
-                    newCol = col - move[1];
-                }
+                    // movement of BLACK Piece
+                    else {
+                        newRow = row - move[0];
+                        newCol = col - move[1];
+                    }
 
-                Tile targetTile = tiles[newRow][newCol];
+                    Tile targetTile = tiles[newRow][newCol];
 
-                // check if capturing is allowed
-                if (!targetTile.isEmpty()) {
-                    if ((i == 0 || i == 1) && currentTile.isDifferentColour(targetTile)) {
+                    // check if capturing is allowed
+                    if (!targetTile.isEmpty()) {
+                        if ((i == 0 || i == 1) && currentTile.isDifferentColour(targetTile)) {
+                            allLegalMoves.add(targetTile);
+                        }
+                    }
+
+                    // check if one-step vertical movement is allowed
+                    if (targetTile.isEmpty() && i == 2) {
                         allLegalMoves.add(targetTile);
                     }
-                }
 
-                // check if one-step vertical movement is allowed
-                if (targetTile.isEmpty() && i == 2) {
-                    allLegalMoves.add(targetTile);
-                }
-
-                if (targetTile.isEmpty() && i == 3) {
-                    if (currentPieceColour == Colour.WHITE && !whitePawnMovesTwo) {
-                        allLegalMoves.add(targetTile);
+                    if (targetTile.isEmpty() && i == 3) {
+                        if (currentPieceColour == Colour.WHITE && !whitePawnMovesTwo) {
+                            allLegalMoves.add(targetTile);
+                        } else if (currentPieceColour == Colour.BLACK && !blackPawnMovesTwo) {
+                            allLegalMoves.add(targetTile);
+                        }
                     }
-                    else if (currentPieceColour == Colour.BLACK && !blackPawnMovesTwo) {
-                        allLegalMoves.add(targetTile);
-                    }
-                }
 
+                }
             }
         }
         return allLegalMoves;
@@ -325,6 +338,7 @@ public class GameState {
         if (currentTile.isEmpty()) return new HashSet<>();
 
         Piece currentPiece = currentTile.getTopPiece();
+
         PieceType currentPieceType = currentPiece.getPieceType();
         Tile[][] tiles = board.getTiles();
 
@@ -381,9 +395,6 @@ public class GameState {
 
         Piece currentPiece = currentTile.getTopPiece();
         PieceType currentPieceType = currentPiece.getPieceType();
-
-
-
         Set<Tile> allLegalMoves = new HashSet<>();
 
         if (currentPieceType == PieceType.QUEEN) {
@@ -433,9 +444,6 @@ public class GameState {
 
         return allLegalMoves;
     }
-
-
-
 
 }
 
