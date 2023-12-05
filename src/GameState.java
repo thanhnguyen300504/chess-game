@@ -14,7 +14,6 @@ public class GameState {
     boolean blackPawnMovesTwo = false;
     boolean blackKingIsChecked = false;
     boolean whiteKingIsChecked = false;
-
     /**
      * getter method for board
      *
@@ -69,6 +68,24 @@ public class GameState {
         }
         if (!availableBlackMoves || !availableWhiteMoves) return true;
         return false;
+    }
+
+    /**
+     * get the KING Tile position with its specified colour
+     * @param kingColour
+     * @return Tile of KING
+     */
+    public Tile getKingTile(Colour kingColour) {
+        for (int row = 0; row < Board.NUMBER_OF_ROWS; row++) {
+            for (int col = 0; col < Board.NUMBER_OF_COLS; col++) {
+                Tile currentTile = this.getBoard().getTiles()[row][col];
+                if (currentTile.getTopPiece().getPieceType() == PieceType.KING
+                        && currentTile.getTopPiece().getPieceColour() == kingColour) {
+                    return currentTile;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -183,7 +200,7 @@ public class GameState {
                     int newCol;
 
                     // movement of WHITE Piece
-                    if (currentPiece.getPieceColour() == Colour.WHITE) {
+                    if (currentPieceColour == Colour.WHITE) {
                         newRow = row + move[0];
                         newCol = col + move[1];
                     }
@@ -386,7 +403,9 @@ public class GameState {
      * @param col
      * @return set of Tile that QUEEN can move to
      */
-    private Set<Tile> getMovesForQueen(int row, int col) {
+    private Set<Tile> getMovesForQueen(Tile tile) {
+        int row = tile.getRow();
+        int col = tile.getCol();
         if (!board.isWithinBoard(row, col)) return new HashSet<>();
 
         Tile currentTile = board.getTiles()[row][col];
